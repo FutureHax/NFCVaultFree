@@ -7,7 +7,7 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
-import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
@@ -41,6 +41,7 @@ public class AddPasswordActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_add_password);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 		mAdapter = NfcAdapter.getDefaultAdapter(this);
 		mPendingIntent = PendingIntent.getActivity(this, 0, new Intent(this,
 				getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
@@ -64,6 +65,14 @@ public class AddPasswordActivity extends Activity {
 			}
 		});
 
+	}
+
+	@Override
+	public boolean onMenuItemSelected(int featureId, MenuItem item) {
+		if (item.getItemId() == android.R.id.home) {
+			super.onBackPressed();			
+		}
+ 		return super.onMenuItemSelected(featureId, item);
 	}
 
 	protected void saveAndFinish() {
@@ -139,13 +148,6 @@ public class AddPasswordActivity extends Activity {
 		i.putExtras(b);
 		setResult(RESULT_OK, i);
 		super.finish();
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.add_password, menu);
-		return true;
 	}
 
 	@Override

@@ -10,7 +10,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
-import android.view.Menu;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.CheckBox;
@@ -24,6 +23,7 @@ import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
+import com.t3hh4xx0r.nfcvault.ChangeLogDialog;
 import com.t3hh4xx0r.nfcvault.R;
 import com.t3hh4xx0r.nfcvault.SettingsProvider;
 
@@ -60,6 +60,7 @@ public class LoginActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
 		getActionBar().setTitle("Login");
+		new ChangeLogDialog(this).show();
 		settings = new SettingsProvider(this);
 		// Set up the login form.
 		mEmail = getIntent().getStringExtra(EXTRA_EMAIL);
@@ -102,13 +103,6 @@ public class LoginActivity extends Activity {
 						attemptLogin();
 					}
 				});
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		super.onCreateOptionsMenu(menu);
-		getMenuInflater().inflate(R.menu.login, menu);
-		return true;
 	}
 
 	/**

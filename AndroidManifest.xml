@@ -47,7 +47,7 @@
             android:excludeFromRecents="true"
             android:exported="false"
             android:finishOnTaskLaunch="true"
-            android:label="@string/title_activity_add_password"
+            android:label="Add New Data"
             android:launchMode="singleTop" >
         </activity>
     </application>

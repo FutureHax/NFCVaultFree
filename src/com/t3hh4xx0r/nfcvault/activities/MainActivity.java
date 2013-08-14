@@ -33,7 +33,7 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
-import com.parse.RefreshCallback;
+import com.t3hh4xx0r.nfcvault.ChangeLogDialog;
 import com.t3hh4xx0r.nfcvault.Password;
 import com.t3hh4xx0r.nfcvault.PasswordCard;
 import com.t3hh4xx0r.nfcvault.PasswordCard.OnViewButtonLister;
@@ -184,8 +184,7 @@ public class MainActivity extends Activity {
 		} else if (item.getItemId() == R.id.action_help) {
 			requestHelp();
 		} else if (item.getItemId() == R.id.action_add_password) {
-			Intent i = new Intent(this,
-					AddPasswordActivity.class);
+			Intent i = new Intent(this, AddPasswordActivity.class);
 			Bundle b = new Bundle();
 			b.putStringArrayList("stacks", getStackNames());
 			i.putExtras(b);
