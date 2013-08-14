@@ -1,0 +1,19 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/action_add_key"
+        android:icon="@drawable/ic_action_add_tag"
+        android:showAsAction="always"
+        android:title="Add Key"/>
+    <item
+        android:id="@+id/action_add_password"
+        android:icon="@drawable/ic_action_add"
+        android:showAsAction="always"
+        android:title="Add Password"/>
+    <item
+        android:id="@+id/action_help"
+        android:icon="@drawable/ic_help"
+        android:showAsAction="always"
+        android:title="Help"/>
+
+</menu>
