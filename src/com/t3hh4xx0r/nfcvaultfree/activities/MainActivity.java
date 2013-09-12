@@ -1,47 +1,57 @@
-package com.t3hh4xx0r.nfcvault.activities;
+package com.t3hh4xx0r.nfcvaultfree.activities;
 
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.fima.cardsui.objects.Card;
 import com.fima.cardsui.objects.Card.OnCardSwiped;
 import com.fima.cardsui.objects.CardStack;
 import com.fima.cardsui.views.CardUI;
+import com.parse.DeleteCallback;
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
-import com.t3hh4xx0r.nfcvault.ChangeLogDialog;
-import com.t3hh4xx0r.nfcvault.Password;
-import com.t3hh4xx0r.nfcvault.PasswordCard;
-import com.t3hh4xx0r.nfcvault.PasswordCard.OnViewButtonLister;
-import com.t3hh4xx0r.nfcvault.R;
-import com.t3hh4xx0r.nfcvault.SettingsProvider;
-import com.t3hh4xx0r.nfcvault.encryption.Encryption;
+import com.parse.SaveCallback;
+import com.t3hh4xx0r.nfcvaultfree.ChangeLogDialog;
+import com.t3hh4xx0r.nfcvaultfree.LaunchPopup;
+import com.t3hh4xx0r.nfcvaultfree.LaunchPopupManager;
+import com.t3hh4xx0r.nfcvaultfree.Password;
+import com.t3hh4xx0r.nfcvaultfree.PasswordCard;
+import com.t3hh4xx0r.nfcvaultfree.PasswordCard.OnViewButtonLister;
+import com.t3hh4xx0r.nfcvaultfree.R;
+import com.t3hh4xx0r.nfcvaultfree.SettingsProvider;
+import com.t3hh4xx0r.nfcvaultfree.encryption.Encryption;
 
-public class MainActivity extends Activity {
+public class MainActivity extends FragmentActivity {
 	CardUI mCardView;
 	ArrayList<CardStack> mCardStacks;
 	ArrayList<PasswordCard> mCards;
@@ -56,6 +66,8 @@ public class MainActivity extends Activity {
 
 	String COLOR = "#33b6ea";
 
+	ProgressBar pBar;
+
 	AlertDialog setupDialog;
 
 	@Override
@@ -66,7 +78,7 @@ public class MainActivity extends Activity {
 		resolveIntent(getIntent());
 		mPendingIntent = PendingIntent.getActivity(this, 0, new Intent(this,
 				getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
-
+		pBar = (ProgressBar) findViewById(R.id.progressBar1);
 		mCardView = (CardUI) findViewById(R.id.cardsview);
 		mCardView.setSwipeable(true);
 		stackTitles = new ArrayList<String>();
@@ -74,6 +86,8 @@ public class MainActivity extends Activity {
 		mCards = new ArrayList<PasswordCard>();
 
 		setupPasswordCards();
+		
+		managePopups();
 	}
 
 	public CardStack getStackForTitle(String title) {
@@ -99,10 +113,13 @@ public class MainActivity extends Activity {
 			mCardView.addStack(stack);
 		}
 		mCardView.refresh();
+		hideProgress(this);
 	}
 
 	private void setupPasswordCards() {
 		mCardView.clearCards();
+		mCardStacks.clear();
+		mCards.clear();
 		mCardView.refresh();
 		ParseQuery<ParseObject> query = ParseQuery.getQuery("Password");
 		query.whereEqualTo("key_owner", ParseUser.getCurrentUser().getEmail());
@@ -133,19 +150,33 @@ public class MainActivity extends Activity {
 
 						card.setOnCardSwipedListener(new OnCardSwiped() {
 							@Override
-							public void onCardSwiped(Card cardRes, View layout) {
+							public void onCardSwiped(Card cardRes,
+									final View layout) {
 								AlertDialog.Builder b = new Builder(layout
 										.getContext());
 								b.setTitle("Delete This Data?");
-								b.setMessage("This will delete the data from you local device and from the cloud. Are you sure you want to continue?");
+								b.setMessage("This will delete the data from you local device and from the cloud.\n\nAre you sure you want to continue?");
 								b.setPositiveButton("Yes",
 										new OnClickListener() {
 											@Override
 											public void onClick(
 													DialogInterface dialog,
 													int which) {
-												o.deleteInBackground();
+												o.deleteInBackground(new DeleteCallback() {
+													@Override
+													public void done(
+															ParseException arg0) {
+														CardStack stack = getStackForTitle(card
+																.getPassword()
+																.getDataStack());
+														if (stack.getCards()
+																.size() == 0) {
+															setupPasswordCards();
+														}
+													}
+												});
 											}
+
 										});
 								b.setNegativeButton("No",
 										new OnClickListener() {
@@ -171,6 +202,26 @@ public class MainActivity extends Activity {
 				}
 			}
 		});
+	}
+
+	private void hideProgress(Context c) {
+		mCardView.setAnimation(AnimationUtils.loadAnimation(c,
+				android.R.anim.fade_in));
+		mCardView.setVisibility(View.VISIBLE);
+
+		pBar.setAnimation(AnimationUtils.loadAnimation(c,
+				android.R.anim.fade_out));
+		pBar.setVisibility(View.GONE);
+	}
+
+	private void showProgress(Context c) {
+		mCardView.setAnimation(AnimationUtils.loadAnimation(c,
+				android.R.anim.fade_out));
+		mCardView.setVisibility(View.GONE);
+
+		pBar.setAnimation(AnimationUtils.loadAnimation(c,
+				android.R.anim.fade_in));
+		pBar.setVisibility(View.VISIBLE);
 	}
 
 	@Override
@@ -212,15 +263,65 @@ public class MainActivity extends Activity {
 						viewButtonListener);
 				getStackForTitle(pCard.getPassword().getDataStack()).add(pCard);
 				mCardView.refresh();
-				result.toParsePassword().saveInBackground();
+				showProgress(this);
+				result.toParsePassword().saveInBackground(new SaveCallback() {
+					@Override
+					public void done(ParseException arg0) {
+						setupPasswordCards();
+						hideProgress(MainActivity.this);
+					}
+				});
 			}
 		} else if (requestCode == 1) {
 			if (data != null && data.hasExtra("password")) {
 				final Password result = (Password) data
 						.getSerializableExtra("password");
-				PasswordCard pCard = new PasswordCard(result,
+				final Password old = (Password) data
+						.getSerializableExtra("oldPassword");
+				final PasswordCard pCard = new PasswordCard(result,
 						viewButtonListener);
-				// save newly edited card and update the ui
+				ParseQuery<ParseObject> query = ParseQuery.getQuery("Password");
+				query.getInBackground(pCard.getPassword().getParseId(),
+						new GetCallback<ParseObject>() {
+							@Override
+							public void done(ParseObject foundPassObject,
+									ParseException arg1) {
+								if (foundPassObject != null) {
+									Password foundPass = new Password(
+											foundPassObject
+													.getString("data_stack"),
+											foundPassObject
+													.getString("data_value"),
+											foundPassObject
+													.getString("data_title"));
+									foundPass.setParseId(foundPassObject
+											.getObjectId());
+									foundPass.update(result);
+									foundPass.toParsePassword()
+											.saveInBackground(
+													new SaveCallback() {
+														@Override
+														public void done(
+																ParseException arg0) {
+															for (PasswordCard card : mCards) {
+																if (card.getPassword()
+																		.getParseId()
+																		.equals(old
+																				.getParseId())) {
+																	mCards.remove(card);
+																	mCards.add(pCard);
+																	break;
+																}
+															}
+															setupPasswordCards();
+															hideProgress(MainActivity.this);
+														}
+													});
+								} else {
+									hideProgress(MainActivity.this);
+								}
+							}
+						});
 			}
 		}
 	}
@@ -255,6 +356,13 @@ public class MainActivity extends Activity {
 		AlertDialog.Builder b = new Builder(this);
 		b.setTitle("How Does It Work?");
 		b.setMessage("NFCVault uses the UID of the tag you scan as the encryption key. This app and the cloud storage never store your key, and all of the encryption and decryption is done locally. No unencrypted data is ever transmitted off of the device. This means if you have lost it and did not write down the value, there is no way to retrieve your passwords. We will provide you with the string value of your key. You MUST write this down in a safe place!");
+		b.setPositiveButton("View Changelog", new OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				ChangeLogDialog cl = new ChangeLogDialog(MainActivity.this);
+				cl.getFullLogDialog().show();
+			}
+		});
 		b.create().show();
 	}
 
@@ -268,6 +376,7 @@ public class MainActivity extends Activity {
 		b.setTitle("Master Password");
 		if (forDecryptView) {
 			final EditText keyView = new EditText(this);
+			keyView.setHint("Or enter you master password here");
 			b.setMessage("Please scan the tag you setup as your master password. We will then decrypt and show you your password.");
 			b.setView(keyView);
 			b.setPositiveButton("Decrypt", new OnClickListener() {
@@ -276,8 +385,7 @@ public class MainActivity extends Activity {
 					isListeningforInitialTagScan = false;
 					isListeningforDecryptTagScan = false;
 					try {
-						// handleDecryptTagInput(keyView.getText().toString());
-						handleDecryptTagInput("04810CF2852A84");
+						handleDecryptTagInput(keyView.getText().toString());
 					} catch (UnsupportedEncodingException e) {
 						e.printStackTrace();
 					} catch (NoSuchAlgorithmException e) {
@@ -442,5 +550,51 @@ public class MainActivity extends Activity {
 			}
 		}
 	};
+
+	private void managePopups() {
+		LaunchPopup rateMe = setupRateMePopup();
+
+		ArrayList<LaunchPopup> popups = new ArrayList<LaunchPopup>();
+		popups.add(rateMe);
+		LaunchPopupManager popupManager = new LaunchPopupManager(popups, this);
+		// LaunchPopupManager.resetData(this);
+		popupManager.start();
+	}
+
+	private int[] getRatePopupTimes() {
+		ArrayList<Integer> res = new ArrayList<Integer>();
+		for (int i = 1; i < 50; i++) {
+			if ((i % 2) == 0) {
+				res.add(i);
+			}
+		}
+		return convertIntegers(res);
+	}
+
+	public static int[] convertIntegers(List<Integer> integers) {
+		int[] ret = new int[integers.size()];
+		Iterator<Integer> iterator = integers.iterator();
+		for (int i = 0; i < ret.length; i++) {
+			ret[i] = iterator.next().intValue();
+		}
+		return ret;
+	}
+	
+	private LaunchPopup setupRateMePopup() {
+		final LaunchPopup rate = new LaunchPopup();
+		rate.setNeedsPlayStore(true);
+		rate.setLaunchesTimes(getRatePopupTimes());
+		rate.setTitle("Rate NFCSecure?");
+		rate.setMessage("If you like this app, please take a moment to comment and rate it on Google Play. Thank you!");
+		rate.setPosButton("Rate it", new OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				startActivity(new Intent(Intent.ACTION_VIEW, Uri
+						.parse("market://details?id=" + getPackageName())));
+				rate.getManagerCallback().onPopupFinished(rate);
+			}
+		});
+		return rate;
+	}
 
 }

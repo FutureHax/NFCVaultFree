@@ -1,4 +1,4 @@
-package com.t3hh4xx0r.nfcvault;
+package com.t3hh4xx0r.nfcvaultfree;
 
 import java.io.Serializable;
 
@@ -8,10 +8,11 @@ import com.parse.ParseUser;
 
 public class Password implements Serializable {
 
+
 	@Override
 	public String toString() {
 		return "Password [dataStack=" + dataStack + ", dataValue=" + dataValue
-				+ ", dataTitle=" + dataTitle + "]";
+				+ ", dataTitle=" + dataTitle + ", parseId=" + parseId + "]";
 	}
 
 	public String getDataStack() {
@@ -53,9 +54,8 @@ public class Password implements Serializable {
 	String dataStack;
 	String dataValue;
 	String dataTitle;
-	
-	String parseId;
 
+	String parseId;
 	public String getParseId() {
 		return parseId;
 	}
@@ -63,12 +63,19 @@ public class Password implements Serializable {
 	public void setParseId(String parseId) {
 		this.parseId = parseId;
 	}
-
+	
+	public void update(Password newPass) {
+		setDataStack(newPass.getDataStack());
+		setDataValue(newPass.getDataValue());
+		setDataTitle(newPass.getDataTitle());
+	}
+	
 	public ParseObject toParsePassword() {
 		ParseObject o = new ParseObject("Password");
 		o.put("data_value", dataValue);
 		o.put("data_stack", dataStack);
 		o.put("data_title", dataTitle);
+		o.setObjectId(parseId);
 		o.put("key_owner", ParseUser.getCurrentUser().getEmail());
 		o.setACL(new ParseACL(ParseUser.getCurrentUser()));
 		return o;

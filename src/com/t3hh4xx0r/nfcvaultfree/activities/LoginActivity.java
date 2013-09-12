@@ -1,4 +1,4 @@
-package com.t3hh4xx0r.nfcvault.activities;
+package com.t3hh4xx0r.nfcvaultfree.activities;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -23,9 +23,9 @@ import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
-import com.t3hh4xx0r.nfcvault.ChangeLogDialog;
-import com.t3hh4xx0r.nfcvault.R;
-import com.t3hh4xx0r.nfcvault.SettingsProvider;
+import com.t3hh4xx0r.nfcvaultfree.ChangeLogDialog;
+import com.t3hh4xx0r.nfcvaultfree.R;
+import com.t3hh4xx0r.nfcvaultfree.SettingsProvider;
 
 /**
  * Activity which displays a login screen to the user, offering registration as
@@ -55,12 +55,18 @@ public class LoginActivity extends Activity {
 	private TextView mLoginStatusMessageView;
 	private CheckBox rememberMe;
 	SettingsProvider settings;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
 		getActionBar().setTitle("Login");
-		new ChangeLogDialog(this).show();
+		ChangeLogDialog cl = new ChangeLogDialog(this);
+//		Uncomment to show always.
+//		cl.dontuseSetLastVersion("0.0");
+		if (cl.firstRun()) {
+			cl.getLogDialog().show();
+		}
 		settings = new SettingsProvider(this);
 		// Set up the login form.
 		mEmail = getIntent().getStringExtra(EXTRA_EMAIL);
@@ -79,6 +85,9 @@ public class LoginActivity extends Activity {
 			}
 		});
 		mPasswordView = (EditText) findViewById(R.id.password);
+		if (settings.getRememberMe() && mEmailView.getText().length() > 0) {
+			mPasswordView.requestFocus();
+		}
 		mPasswordView
 				.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 					@Override
@@ -114,7 +123,7 @@ public class LoginActivity extends Activity {
 		if (mAuthTask != null) {
 			return;
 		}
-		
+
 		// Reset errors.
 		mEmailView.setError(null);
 		mPasswordView.setError(null);

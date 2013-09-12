@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.t3hh4xx0r.nfcvault;
+package com.t3hh4xx0r.nfcvaultfree;
 
 import android.app.Application;
 

@@ -1,4 +1,4 @@
-package com.t3hh4xx0r.nfcvault;
+package com.t3hh4xx0r.nfcvaultfree;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -8,7 +8,7 @@ import android.content.Context;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.t3hh4xx0r.nfcvault.activities.MainActivity;
+import com.t3hh4xx0r.nfcvaultfree.activities.MainActivity;
 
 public class SettingsProvider {
 	private static final String HASHED_KEY = "key_hash";

@@ -1,4 +1,4 @@
-package com.t3hh4xx0r.nfcvault;
+package com.t3hh4xx0r.nfcvaultfree;
 
 import android.content.Context;
 import android.graphics.Color;

@@ -1,4 +1,4 @@
-package com.t3hh4xx0r.nfcvault.activities;
+package com.t3hh4xx0r.nfcvaultfree.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -17,10 +17,10 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 
-import com.t3hh4xx0r.nfcvault.Password;
-import com.t3hh4xx0r.nfcvault.R;
-import com.t3hh4xx0r.nfcvault.SettingsProvider;
-import com.t3hh4xx0r.nfcvault.encryption.Encryption;
+import com.t3hh4xx0r.nfcvaultfree.Password;
+import com.t3hh4xx0r.nfcvaultfree.R;
+import com.t3hh4xx0r.nfcvaultfree.SettingsProvider;
+import com.t3hh4xx0r.nfcvaultfree.encryption.Encryption;
 
 public class AddPasswordActivity extends Activity {
 
@@ -48,7 +48,8 @@ public class AddPasswordActivity extends Activity {
 		passView = (EditText) findViewById(R.id.pass);
 		stackName = (AutoCompleteTextView) findViewById(R.id.stack);
 		stackName.setAdapter(new ArrayAdapter<String>(this,
-				android.R.layout.simple_dropdown_item_1line, getIntent().getStringArrayListExtra("stacks")));
+				android.R.layout.simple_dropdown_item_1line, getIntent()
+						.getStringArrayListExtra("stacks")));
 		title = (EditText) findViewById(R.id.title);
 		isEditing = getIntent().hasExtra("password");
 		if (isEditing) {
@@ -70,17 +71,21 @@ public class AddPasswordActivity extends Activity {
 	@Override
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
 		if (item.getItemId() == android.R.id.home) {
-			super.onBackPressed();			
+			super.onBackPressed();
 		}
- 		return super.onMenuItemSelected(featureId, item);
+		return super.onMenuItemSelected(featureId, item);
 	}
 
 	protected void saveAndFinish() {
-		try {
-			encryptedPass = Encryption.encryptString(passView.getText()
-					.toString(), secrectID);
-		} catch (Exception e) {
-			e.printStackTrace();
+		if (editable == null) {
+			try {
+				encryptedPass = Encryption.encryptString(passView.getText()
+						.toString(), secrectID);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else {
+			encryptedPass = editable.getDataValue();
 		}
 		finish();
 	}
@@ -142,6 +147,7 @@ public class AddPasswordActivity extends Activity {
 					encryptedPass, title.getText().toString());
 			if (editable != null) {
 				p.setParseId(editable.getParseId());
+				b.putSerializable("oldPassword", editable);
 			}
 			b.putSerializable("password", p);
 		}

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.t3hh4xx0r.nfcvault"
+    package="com.t3hh4xx0r.nfcvaultfree"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -12,13 +12,13 @@
         android:targetSdkVersion="18" />
 
     <application
-        android:name="com.t3hh4xx0r.nfcvault.UberApplication"
+        android:name="com.t3hh4xx0r.nfcvaultfree.UberApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.t3hh4xx0r.nfcvault.activities.MainActivity"
+            android:name="com.t3hh4xx0r.nfcvaultfree.activities.MainActivityvity"
             android:excludeFromRecents="true"
             android:exported="false"
             android:finishOnTaskLaunch="true"
@@ -33,7 +33,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.t3hh4xx0r.nfcvault.activities.LoginActivity"
+            android:name="com.t3hh4xx0r.nfcvaultfree.activities.LoginActivityvity"
+            android:excludeFromRecents="true"
+            android:finishOnTaskLaunch="true"
             android:label="@string/app_name"
             android:windowSoftInputMode="adjustResize|stateVisible" >
             <intent-filter>
@@ -43,7 +45,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.t3hh4xx0r.nfcvault.activities.AddPasswordActivity"
+            android:name="com.t3hh4xx0r.nfcvaultfree.activities.AddPasswordActivityvity"
             android:excludeFromRecents="true"
             android:exported="false"
             android:finishOnTaskLaunch="true"
