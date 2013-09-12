@@ -18,7 +18,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.t3hh4xx0r.nfcvaultfree.activities.MainActivityvity"
+            android:name="com.t3hh4xx0r.nfcvaultfree.activities.MainActivity"
             android:excludeFromRecents="true"
             android:exported="false"
             android:finishOnTaskLaunch="true"
@@ -33,7 +33,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.t3hh4xx0r.nfcvaultfree.activities.LoginActivityvity"
+            android:name="com.t3hh4xx0r.nfcvaultfree.activities.LoginActivity"
             android:excludeFromRecents="true"
             android:finishOnTaskLaunch="true"
             android:label="@string/app_name"
@@ -45,7 +45,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.t3hh4xx0r.nfcvaultfree.activities.AddPasswordActivityvity"
+            android:name="com.t3hh4xx0r.nfcvaultfree.activities.AddPasswordActivity"
             android:excludeFromRecents="true"
             android:exported="false"
             android:finishOnTaskLaunch="true"
