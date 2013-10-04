@@ -15,5 +15,9 @@
         android:icon="@drawable/ic_help"
         android:showAsAction="always"
         android:title="Help"/>
+    <item
+        android:id="@+id/action_contact"
+        android:showAsAction="never"
+        android:title="Contact Developer"/>    
 
 </menu>

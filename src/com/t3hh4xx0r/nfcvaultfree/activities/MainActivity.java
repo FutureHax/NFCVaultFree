@@ -240,6 +240,15 @@ public class MainActivity extends FragmentActivity {
 			b.putStringArrayList("stacks", getStackNames());
 			i.putExtras(b);
 			startActivityForResult(i, 0);
+		} else if (item.getItemId() == R.id.action_contact) {
+			final Intent emailIntent = new Intent(
+					android.content.Intent.ACTION_SEND);
+			emailIntent.setType("plain/text");
+			emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL,
+					new String[] { "r2doesinc@gmail.com" });
+			emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT,
+					"NFCVault Feedback");
+			startActivity(Intent.createChooser(emailIntent, "Send via..."));
 		}
 		return super.onMenuItemSelected(featureId, item);
 	}
