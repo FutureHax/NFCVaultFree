@@ -23,9 +23,10 @@ import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
-import com.t3hh4xx0r.nfcvaultfree.ChangeLogDialog;
 import com.t3hh4xx0r.nfcvaultfree.R;
 import com.t3hh4xx0r.nfcvaultfree.SettingsProvider;
+
+import de.cketti.library.changelog.ChangeLog;
 
 /**
  * Activity which displays a login screen to the user, offering registration as
@@ -61,10 +62,10 @@ public class LoginActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
 		getActionBar().setTitle("Login");
-		ChangeLogDialog cl = new ChangeLogDialog(this);
-//		Uncomment to show always.
-//		cl.dontuseSetLastVersion("0.0");
-		if (cl.firstRun()) {
+		ChangeLog cl = new ChangeLog(this);
+		// Uncomment to show always.
+		// cl.dontuseSetLastVersion("0.0");
+		if (cl.isFirstRun()) {
 			cl.getLogDialog().show();
 		}
 		settings = new SettingsProvider(this);

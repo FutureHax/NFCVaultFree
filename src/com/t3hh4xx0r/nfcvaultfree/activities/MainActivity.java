@@ -41,7 +41,6 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
-import com.t3hh4xx0r.nfcvaultfree.ChangeLogDialog;
 import com.t3hh4xx0r.nfcvaultfree.LaunchPopup;
 import com.t3hh4xx0r.nfcvaultfree.LaunchPopupManager;
 import com.t3hh4xx0r.nfcvaultfree.Password;
@@ -50,6 +49,8 @@ import com.t3hh4xx0r.nfcvaultfree.PasswordCard.OnViewButtonLister;
 import com.t3hh4xx0r.nfcvaultfree.R;
 import com.t3hh4xx0r.nfcvaultfree.SettingsProvider;
 import com.t3hh4xx0r.nfcvaultfree.encryption.Encryption;
+
+import de.cketti.library.changelog.ChangeLog;
 
 public class MainActivity extends FragmentActivity {
 	CardUI mCardView;
@@ -86,7 +87,7 @@ public class MainActivity extends FragmentActivity {
 		mCards = new ArrayList<PasswordCard>();
 
 		setupPasswordCards();
-		
+
 		managePopups();
 	}
 
@@ -368,7 +369,7 @@ public class MainActivity extends FragmentActivity {
 		b.setPositiveButton("View Changelog", new OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				ChangeLogDialog cl = new ChangeLogDialog(MainActivity.this);
+				ChangeLog cl = new ChangeLog(MainActivity.this);
 				cl.getFullLogDialog().show();
 			}
 		});
@@ -588,7 +589,7 @@ public class MainActivity extends FragmentActivity {
 		}
 		return ret;
 	}
-	
+
 	private LaunchPopup setupRateMePopup() {
 		final LaunchPopup rate = new LaunchPopup();
 		rate.setNeedsPlayStore(true);
