@@ -408,14 +408,14 @@ public class MainActivity extends FragmentActivity {
 			b.setMessage("Please scan the tag you plan to use as your master key. We will store the md5 of this value to ensure you are using the correct key when encrypting/decrypting your passwords.");
 		}
 		setupDialog = b.create();
-		setupDialog.show();
-		b.setOnDismissListener(new OnDismissListener() {
+		setupDialog.setOnDismissListener(new OnDismissListener() {
 			@Override
 			public void onDismiss(DialogInterface dialog) {
 				isListeningforInitialTagScan = false;
 				isListeningforDecryptTagScan = false;
 			}
 		});
+		setupDialog.show();
 	}
 
 	private void warnWrongKey() {
